@@ -1,11 +1,9 @@
+
 from pyspark.sql import SparkSession
 from src.main.domain.models import Transaction, TransactionItem
-from src.main.domain.math_ops import compute_element_utility, compute_transaction_utility
 
 def parse_spmf_line(line: str, line_idx: int) -> Transaction:
-    """
-    Analyse une ligne au format SPMF et la convertit en un objet Transaction.
-    """
+    """Parse une ligne brute SPMF en objet Transaction du Domain."""
     if not line.strip():
         return None
         
@@ -17,14 +15,10 @@ def parse_spmf_line(line: str, line_idx: int) -> Transaction:
     total_utility = float(parts[1].strip())
     item_utilities = [float(x) for x in parts[2].strip().split()]
 
-    transaction_items = []
-    for i in range(len(item_ids)):
-        ti = TransactionItem(
-            item_id=item_ids[i],
-            quantity=1,
-            item_utility=item_utilities[i]
-        )
-        transaction_items.append(ti)
+    transaction_items = [
+        TransactionItem(item_id=item_ids[i], quantity=1, item_utility=item_utilities[i])
+        for i in range(len(item_ids))
+    ]
 
     return Transaction(
         transaction_id=line_idx,
@@ -34,12 +28,8 @@ def parse_spmf_line(line: str, line_idx: int) -> Transaction:
 
 
 def load_dataset_from_spmf(spark: SparkSession, file_path: str):
-    """
-    Charge un fichier SPMF de manière distribuée et le transforme en un RDD d'objets Transaction.
-    """
+    """Charge parallèlement un fichier SPMF et retourne un RDD de Transactions."""
     raw_lines_rdd = spark.sparkContext.textFile(file_path)
-    transactions_rdd = raw_lines_rdd.zipWithIndex().map(
+    return raw_lines_rdd.zipWithIndex().map(
         lambda pair: parse_spmf_line(pair[0], pair[1])
     ).filter(lambda x: x is not None)
-    
-    return transactions_rdd
