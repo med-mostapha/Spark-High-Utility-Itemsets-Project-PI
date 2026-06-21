@@ -69,41 +69,59 @@ pip install -r requirements.txt
 
 ## 📋 4. TODO List / Workflow Étape par Étape
 
-[x] Initialisation du Git et Branche feature/setup
+- [x] Initialisation du Git et Branche feature/setup
+- [x] Configuration de l'environnement virtuel (.venv-pi)
+- [x] Rédaction du README.md et Architecture cible
+- [x] Création du fichier requirements.txt (Dépendances Spark)
+- [x] Implémentation de la couche domain/models.py
+- [x] Implémentation du chargeur de données infrastructure/data_loader.py
+- [x] Implémentation du filtre de réduction core/twu_filter.py
+- [x] Implémentation du cœur distribué core/hui_miner.py
+- [x] Tests et Validation de l'exactitude mathématique (10/10 Passed)
+- [ ] Tests de montée en charge (Scalability) sur gros volumes de données
 
-[x] Configuration de l'environnement virtuel (.venv-pi)
+---
 
-[x] Rédaction du README.md et Architecture cible
+## 🚀 How to Run (Guide pour les Amis)
 
-[ ] Création du fichier requirements.txt (Dépendances Spark)
+Pour permettre à vos collègues et amis de tester et d'exécuter ce projet facilement sur leurs machines, voici la démarche standard :
 
-[ ] Implémentation de la couche domain/models.py
+### 1. Prerequisites
 
-[ ] Implémentation du chargeur de données infrastructure/data_loader.py
+Assurez-vous d'avoir **Python 3.12+** et **Java (OpenJDK 17 ou 11)** installés sur votre machine (requis pour Apache Spark).
 
-[ ] Implémentation du filtre de réduction core/twu_filter.py
+### 2. Installation & Setup
 
-[ ] Implémentation du cœur distribué core/hui_miner.py
+Clonez le projet, créez l'environnement virtuel et installez les dépendances :
 
-[ ] Tests de montée en charge (Scalability) sur gros volumes de données
+```bash
+# Activer l'environnement virtuel
+source .venv-pi/bin/activate
 
-📦 Root
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
-┃
+# Installer les dépendances requises
+pip install -r requirements.txt
+```
+
+## 3. Run Unit Tests
+
+Pour vérifier que toute l'architecture distribuée et locale fonctionne à 100% sans bug :
+
+```bash
+pytest
+```
+
+## 4. Run the Pipeline Execution
+
+Pour lancer l'extraction des itemsets à forte utilité (HUIs) sur le jeu de données exemple avec un seuil de profit minimum (ex: 35.0 ou 45.0) :
+
+# Exécution standard avec PYTHONPATH
+
+```bash
+PYTHONPATH=. python3 src/main/main.py
+```
+
+# Ou en spécifiant un fichier de données et un seuil personnalisé
+
+```bash
+PYTHONPATH=. python3 src/main/main.py src/tests/infrastructure/sample.txt 45.0
+```
